@@ -268,7 +268,7 @@
   <div id="toolbar">
     <h1>Elementary ARD Deliberations — Minutes Form</h1>
     <button id="btn-clear" onclick="clearForm()">Clear Form</button>
-    <button id="btn-print" onclick="window.print()">🖨 Generate PDF</button>
+    <button id="btn-print" onclick="generateDocument()">🖨 Generate PDF</button>
   </div>
 
   <!-- ── Document ──────────────────────────────────────────────────── -->
@@ -601,6 +601,223 @@
 
     /* Load saved data on page open */
     loadForm();
+
+    /* ── HTML escaping helper ────────────────────────────────────────── */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    /* ── Build &amp; open a clean completed-minutes document ─────────── */
+    function generateDocument() {
+      /* ── Collect values ─────────────────────────────────────────── */
+      const studentName   = document.getElementById("f-student-name").value.trim();
+      const campus        = document.getElementById("f-campus").value.trim();
+      const grade         = document.getElementById("f-grade").value.trim();
+      const dateVal       = document.getElementById("f-date").value;
+      const noticeDate    = document.getElementById("f-notice-date").value.trim();
+      const confReader    = document.getElementById("f-confidentiality-reader").value.trim();
+      const purpose       = document.getElementById("f-purpose").value;
+      const parentConc    = document.getElementById("f-parent-concerns").value.trim();
+      const eligSelects   = getSelectedValues(document.getElementById("f-eligibility"));
+      const pcsSelects    = getSelectedValues(document.getElementById("f-pcs"));
+      const pcsOther      = document.getElementById("f-pcs-other").value.trim();
+      const lrePlacement  = document.getElementById("f-lre-placement").value.trim();
+      const esyDecision   = document.getElementById("f-esy-decision").value;
+      const studentFirst  = document.getElementById("f-student-first").value.trim();
+      const therapy       = document.getElementById("f-therapy").value.trim();
+      const closing       = document.getElementById("f-closing").value.trim();
+      const minutesTaker  = document.getElementById("f-minutes-taker").value.trim();
+
+      /* ── Derived values ─────────────────────────────────────────── */
+      let displayDate = "";
+      if (dateVal) {
+        /* dateVal from <input type="date"> is always YYYY-MM-DD; append local
+           midnight so toLocaleDateString reflects the user's time zone. */
+        const d = new Date(dateVal + "T00:00:00");
+        if (!isNaN(d.getTime())) {
+          displayDate = d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+        }
+      }
+
+      const nameForDoc  = studentName || "[Student Name]";
+      const nameForESY  = studentName || "[student name]";
+
+      /* Derive a first name for the Review section.
+         Priority: dedicated "Student first name" field → parse from header name.
+         Header name placeholder is "Last, First Middle", so look after the comma
+         first; fall back to the first whitespace-separated token. */
+      let nameForReview = studentFirst;
+      if (!nameForReview && studentName) {
+        const afterComma = studentName.split(",")[1];
+        nameForReview = afterComma
+          ? afterComma.trim().split(/\s+/)[0]
+          : studentName.split(/\s+/)[0];
+      }
+      if (!nameForReview) nameForReview = "[student]";
+
+      const pcsItems = [...pcsSelects];
+      if (pcsOther) pcsItems.push(pcsOther);
+      const pcsText = pcsItems.join(", ");
+
+      let esyStatement = "";
+      if (esyDecision === "Yes") {
+        esyStatement = "ESY is recommended for " + nameForESY + " at this time.";
+      } else if (esyDecision === "No") {
+        esyStatement = "ESY is not recommended for " + nameForESY + " at this time.";
+      }
+
+      /* ── Helper: text block turned into <p> tags ────────────────── */
+      function textBlock(raw) {
+        return raw.split(/\r?\n/).map(line => line.trim())
+          .filter(line => line.length)
+          .map(line => "  <p class=\"para\">" + escapeHtml(line) + "</p>")
+          .join("\n");
+      }
+
+      /* ── Build HTML ─────────────────────────────────────────────── */
+      let body = "";
+
+      /* Title */
+      body += "  <p class=\"doc-title\">Elementary ARD Deliberations</p>\n";
+
+      /* Header grid – only show populated fields */
+      const headerPairs = [
+        ["Student Name:", studentName],
+        ["Campus:",       campus],
+        ["Grade:",        grade],
+        ["Date:",         displayDate]
+      ].filter(([, v]) => v);
+
+      if (headerPairs.length) {
+        body += "  <div class=\"header-grid\">\n";
+        headerPairs.forEach(([lbl, val]) => {
+          body += "    <div class=\"header-field\">"
+               + "<span class=\"hdr-label\">" + escapeHtml(lbl) + "</span>"
+               + "<span class=\"hdr-value\">" + escapeHtml(val) + "</span>"
+               + "</div>\n";
+        });
+        body += "  </div>\n";
+      }
+
+      /* Opening the ARD */
+      body += "  <p class=\"section-heading\">Opening the ARD:</p>\n";
+      if (noticeDate) {
+        body += "  <p class=\"para\">ARD Notice was sent home on " + escapeHtml(noticeDate) + ".</p>\n";
+      }
+      if (confReader) {
+        body += "  <p class=\"para\">Introductions were made &amp; Statement of Confidentiality was read by "
+             + escapeHtml(confReader) + ".</p>\n";
+      }
+      if (purpose) {
+        body += "  <p class=\"para\"><strong>Purpose of the Meeting:</strong> " + escapeHtml(purpose) + "</p>\n";
+      }
+      if (parentConc) {
+        body += "  <p class=\"para\"><strong>Concerns from Parent:</strong></p>\n" + textBlock(parentConc) + "\n";
+      }
+
+      /* Evaluation and Eligibility */
+      body += "  <p class=\"section-heading\">Evaluation and Eligibility:</p>\n";
+      body += "  <p class=\"para\">Review of Evaluation Data and Determination of Eligibility</p>\n";
+      if (eligSelects.length) {
+        body += "  <p class=\"para\"><strong>Current Eligibility(s) include:</strong> "
+             + escapeHtml(eligSelects.join(", ")) + "</p>\n";
+      }
+
+      /* Development of the IEP */
+      body += "  <p class=\"section-heading\">Development of the IEP:</p>\n";
+      body += "  <p class=\"para\"><strong>Present Level of Academic Achievement and Functional Performance (PLAAFP)"
+           + " can be found in the IEP.</strong></p>\n";
+      body += "  <p class=\"para\">Proposed IEP Goals/Objectives have been presented and accepted in the areas of Math,"
+           + " Reading, Science, and Social Studies</p>\n";
+      body += "  <p class=\"para\">IEP progress reports will be given to the parent every 9 weeks to match the grading"
+           + " report period for all students.</p>\n";
+      body += "  <p class=\"para\"><strong>Accommodations</strong> - See IEP</p>\n";
+      if (pcsText) {
+        body += "  <p class=\"para\">Personal Care Services are provided in the areas of "
+             + escapeHtml(pcsText) + ".</p>\n";
+      }
+      body += "  <p class=\"para\"><strong>The committee agrees that this is the Least Restrictive Environment (LRE)/"
+           + "Placement of Services/Schedule of Services</strong></p>\n";
+
+      /* Placement of Services */
+      body += "  <p class=\"section-heading\">Placement of Services</p>\n";
+      if (lrePlacement) {
+        body += textBlock(lrePlacement) + "\n";
+      }
+
+      /* Extended School Year */
+      body += "  <p class=\"section-heading\">Extended School Year (ESY)</p>\n";
+      if (esyStatement) {
+        body += "  <p class=\"para\">" + escapeHtml(esyStatement) + "</p>\n";
+      }
+
+      /* Review of Committee Decisions */
+      body += "  <p class=\"section-heading\">Review of Committee Decisions</p>\n";
+      body += "  <p class=\"para\">" + escapeHtml(nameForReview)
+           + " will continue to receive functional academics classroom instruction and personal care services.</p>\n";
+      if (therapy) {
+        body += textBlock(therapy) + "\n";
+      }
+
+      /* Closing the ARD */
+      body += "  <p class=\"section-heading\">Closing the ARD</p>\n";
+      if (closing) {
+        body += textBlock(closing) + "\n";
+      }
+      body += "  <p class=\"para\">Prior Written Notice was reviewed.</p>\n";
+      body += "  <p class=\"para\">The parent verbally agreed to the decisions made in the meeting today.</p>\n";
+      body += "  <p class=\"para\">Procedural Safeguards were provided.</p>\n";
+      body += "  <hr class=\"thin\" />\n";
+      body += "  <p class=\"para sig-label\"><strong>Minutes Taker and Position:</strong></p>\n";
+      body += "  <div class=\"sig-line\">" + escapeHtml(minutesTaker) + "</div>\n";
+
+      /* ── Assemble full document ──────────────────────────────────── */
+      const html = "<!DOCTYPE html>\n"
+        + "<html lang=\"en\">\n<head>\n"
+        + "  <meta charset=\"UTF-8\" />\n"
+        + "  <title>ARD Minutes \u2013 " + escapeHtml(nameForDoc) + "</title>\n"
+        + "  <style>\n"
+        + "    @page { size: letter; margin: 0.75in 1in; }\n"
+        + "    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\n"
+        + "    body { font-family: \"Times New Roman\", Times, serif; font-size: 12pt; color: #000; background: #fff; }\n"
+        + "    .doc-title { text-align: center; font-size: 14pt; font-weight: bold; margin-bottom: 18pt; }\n"
+        + "    .header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6pt 24pt; margin-bottom: 14pt; }\n"
+        + "    .header-field { display: flex; gap: 6pt; align-items: baseline; }\n"
+        + "    .hdr-label { font-weight: bold; font-size: 11pt; white-space: nowrap; }\n"
+        + "    .hdr-value { border-bottom: 1pt solid #000; flex: 1; min-width: 60pt; }\n"
+        + "    .section-heading { font-size: 12pt; font-weight: bold; text-decoration: underline; margin: 14pt 0 6pt; }\n"
+        + "    .para { margin: 5pt 0; line-height: 1.55; }\n"
+        + "    .sig-label { margin-top: 8pt; }\n"
+        + "    .sig-line { border-bottom: 1pt solid #000; min-height: 18pt; margin-top: 4pt; padding-bottom: 2pt; }\n"
+        + "    hr.thin { border: none; border-top: 1pt solid #000; margin: 14pt 0; }\n"
+        + "  </style>\n"
+        + "</head>\n<body>\n"
+        + body
+        + "</body>\n</html>";
+
+      /* ── Open clean window and trigger print ────────────────────── */
+      const win = window.open("", "_blank", "width=900,height=700");
+      if (!win) {
+        alert("Pop-up blocked. Please allow pop-ups for this site and try again.");
+        return;
+      }
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      /* Trigger print once the document is fully parsed and laid out.
+         After document.close() the page may already be complete (sync write),
+         so check readyState first; otherwise wait for the load event. */
+      if (win.document.readyState === "complete") {
+        win.print();
+      } else {
+        win.onload = function () { win.print(); };
+      }
+    }
   </script>
 </body>
 </html>
