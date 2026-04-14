@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elementary ARD Deliberations Minutes</title>
+  <style>
+    /* ── Reset & base ────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 12pt;
+      background: #e8e8e8;
+      color: #000;
+    }
+
+    /* ── Toolbar (hidden when printing) ─────────────────────────────── */
+    #toolbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: #2c3e50;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    }
+
+    #toolbar h1 {
+      font-family: Arial, sans-serif;
+      font-size: 14pt;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    #toolbar button {
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      font-weight: 600;
+      padding: 7px 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #btn-print {
+      background: #27ae60;
+      color: #fff;
+    }
+
+    #btn-print:hover { background: #219150; }
+
+    #btn-clear {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    #btn-clear:hover { background: #c0392b; }
+
+    /* ── Document wrapper ────────────────────────────────────────────── */
+    #document {
+      background: #fff;
+      width: 8.5in;
+      min-height: 11in;
+      margin: 70px auto 40px;
+      padding: 0.75in 1in 1in;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    }
+
+    /* ── Document title ──────────────────────────────────────────────── */
+    .doc-title {
+      text-align: center;
+      font-size: 16pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 4pt;
+    }
+
+    .doc-subtitle {
+      text-align: center;
+      font-size: 11pt;
+      color: #444;
+      margin-bottom: 18pt;
+    }
+
+    /* ── Header grid (Name / Campus / Grade / Date) ──────────────────── */
+    .header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6pt 24pt;
+      border: 1px solid #000;
+      padding: 8pt 10pt;
+      margin-bottom: 14pt;
+    }
+
+    .header-field {
+      display: flex;
+      align-items: baseline;
+      gap: 6pt;
+      white-space: nowrap;
+    }
+
+    .header-field label {
+      font-weight: bold;
+      font-size: 11pt;
+      white-space: nowrap;
+    }
+
+    /* ── Section headings ────────────────────────────────────────────── */
+    .section-heading {
+      font-size: 13pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 2px solid #000;
+      margin: 14pt 0 6pt;
+      padding-bottom: 2pt;
+      letter-spacing: .04em;
+    }
+
+    /* ── Paragraph blocks ────────────────────────────────────────────── */
+    .para {
+      margin: 5pt 0;
+      line-height: 1.55;
+    }
+
+    /* ── Bubble rows ─────────────────────────────────────────────────── */
+    .bubble-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8pt;
+      margin: 5pt 0;
+      line-height: 1.55;
+    }
+
+    /* Custom circular checkbox ("bubble") */
+    .bubble-row input[type="checkbox"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14pt;
+      height: 14pt;
+      min-width: 14pt;
+      border: 1.5pt solid #000;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      top: 1pt;
+      background: #fff;
+      transition: background .15s;
+    }
+
+    .bubble-row input[type="checkbox"]:checked {
+      background: #000;
+    }
+
+    .bubble-row input[type="checkbox"]:checked::after {
+      content: "";
+      display: block;
+      width: 6pt;
+      height: 6pt;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ── Inline text inputs ──────────────────────────────────────────── */
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: #000;
+      background: transparent;
+      border: none;
+      border-bottom: 1pt solid #000;
+      outline: none;
+      padding: 1pt 2pt;
+      min-width: 80pt;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    textarea:focus {
+      border-bottom-color: #2980b9;
+      background: #eef6ff;
+    }
+
+    /* Inline fields that flow inside text */
+    .inline-field {
+      display: inline-block;
+      min-width: 120pt;
+    }
+
+    /* Standalone full-width text areas */
+    .block-field {
+      display: block;
+      width: 100%;
+      border: 1pt solid #999;
+      border-radius: 2pt;
+      padding: 4pt 6pt;
+      margin-top: 3pt;
+      resize: vertical;
+      min-height: 36pt;
+    }
+
+    .block-field:focus {
+      border-color: #2980b9;
+      background: #eef6ff;
+    }
+
+    /* Short header inputs */
+    .hdr-input {
+      flex: 1;
+      min-width: 0;
+      border-bottom: 1pt solid #000;
+    }
+
+    /* ── Separator line ──────────────────────────────────────────────── */
+    hr.thin { border: none; border-top: 1pt solid #ccc; margin: 10pt 0; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       PRINT / PDF STYLES
+       ══════════════════════════════════════════════════════════════════ */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0.75in 1in;
+      }
+
+      body { background: #fff; }
+
+      #toolbar { display: none !important; }
+
+      #document {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      /* Render text inputs as underlined text, not form controls */
+      input[type="text"],
+      input[type="date"] {
+        border: none;
+        border-bottom: 1pt solid #000;
+        background: transparent !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      textarea {
+        border: 1pt solid #aaa;
+        background: transparent !important;
+        resize: none;
+        overflow: visible;
+        height: auto;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* Bubbles in print */
+      .bubble-row input[type="checkbox"] {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .bubble-row input[type="checkbox"]:checked {
+        background: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Toolbar ───────────────────────────────────────────────────── -->
+  <div id="toolbar">
+    <h1>Elementary ARD Deliberations — Minutes Form</h1>
+    <button id="btn-clear" onclick="clearForm()">Clear Form</button>
+    <button id="btn-print" onclick="window.print()">🖨 Generate PDF</button>
+  </div>
+
+  <!-- ── Document ──────────────────────────────────────────────────── -->
+  <div id="document">
+
+    <p class="doc-title">Elementary ARD Deliberations</p>
+    <p class="doc-subtitle">Annual Review / Re-Evaluation / Initial ARD</p>
+
+    <!-- Header grid -->
+    <div class="header-grid">
+      <div class="header-field">
+        <label for="f-student-name">Student Name:</label>
+        <input id="f-student-name" class="hdr-input" type="text" placeholder="Last, First Middle" />
+      </div>
+      <div class="header-field">
+        <label for="f-campus">Campus:</label>
+        <input id="f-campus" class="hdr-input" type="text" placeholder="School name" />
+      </div>
+      <div class="header-field">
+        <label for="f-grade">Grade:</label>
+        <input id="f-grade" class="hdr-input" type="text" placeholder="e.g. 3rd" />
+      </div>
+      <div class="header-field">
+        <label for="f-date">Date:</label>
+        <input id="f-date" class="hdr-input" type="date" />
+      </div>
+    </div>
+
+    <!-- ── Opening the ARD ─────────────────────────────────────────── -->
+    <p class="section-heading">Opening the ARD</p>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-notice" />
+      <label for="cb-notice" class="para">
+        ARD Notice was sent home on
+        <input id="f-notice-date" class="inline-field" type="text" placeholder="MM/DD/YYYY" style="min-width:90pt" />.
+      </label>
+    </div>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-intro" />
+      <label for="cb-intro" class="para">
+        Introductions were made &amp; Statement of Confidentiality was read.
+      </label>
+    </div>
+
+    <p class="para" style="margin-top:8pt;"><strong>Purpose of the Meeting:</strong></p>
+    <textarea id="f-purpose" class="block-field" rows="3"
+              placeholder="Describe the purpose of this meeting…"></textarea>
+
+    <p class="para" style="margin-top:8pt;"><strong>Concerns from Parent:</strong></p>
+    <textarea id="f-parent-concerns" class="block-field" rows="3"
+              placeholder="Document any concerns expressed by the parent…"></textarea>
+
+    <!-- ── Evaluation and Eligibility ─────────────────────────────── -->
+    <p class="section-heading">Evaluation and Eligibility</p>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-eval" />
+      <label for="cb-eval" class="para">
+        Review of evaluation data and determination of eligibility.
+      </label>
+    </div>
+
+    <p class="para" style="margin-top:6pt;">
+      Current Eligibility(s) include:
+    </p>
+    <textarea id="f-eligibility" class="block-field" rows="2"
+              placeholder="e.g. Intellectual Disability, Autism…"></textarea>
+
+    <!-- ── Development of the IEP ─────────────────────────────────── -->
+    <p class="section-heading">Development of the IEP</p>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-plaafp" />
+      <label for="cb-plaafp" class="para">
+        Present Level of Academic Achievement and Functional Performance (PLAAFP)
+        can be found in the IEP.
+      </label>
+    </div>
+
+    <p class="para" style="margin-top:6pt;">
+      Proposed IEP goals/objectives have been presented and accepted in the
+      following areas:
+    </p>
+    <textarea id="f-iep-goals" class="block-field" rows="2"
+              placeholder="e.g. Communication, Adaptive Behavior, Math…"></textarea>
+
+    <div class="bubble-row" style="margin-top:6pt;">
+      <input type="checkbox" id="cb-progress" />
+      <label for="cb-progress" class="para">
+        IEP progress reports will be given to the parent every 9 weeks to match
+        the grading report period for all students.
+      </label>
+    </div>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-accom" />
+      <label for="cb-accom" class="para">
+        Accommodations: See IEP.
+      </label>
+    </div>
+
+    <!-- ── Personal Care Services ─────────────────────────────────── -->
+    <p class="section-heading">Personal Care Services</p>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs" />
+      <label for="cb-pcs" class="para">
+        Personal care services are provided in the areas of
+        <input id="f-pcs" class="inline-field" type="text"
+               placeholder="toileting, feeding, etc."
+               style="min-width:160pt" />.
+      </label>
+    </div>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-lre" />
+      <label for="cb-lre" class="para">
+        The committee agrees that this is the Least Restrictive Environment (LRE).
+      </label>
+    </div>
+
+    <!-- ── Placement of Services ──────────────────────────────────── -->
+    <p class="section-heading">Placement of Services</p>
+
+    <textarea id="f-lre-placement" class="block-field" rows="3"
+              placeholder="Describe the LRE placement…"></textarea>
+
+    <!-- ── Extended School Year (ESY) ────────────────────────────── -->
+    <p class="section-heading">Extended School Year (ESY)</p>
+
+    <textarea id="f-esy" class="block-field" rows="2"
+              placeholder="e.g. The committee determined that ESY services are / are not needed because…"></textarea>
+
+    <!-- ── Review of Committee Decisions ─────────────────────────── -->
+    <p class="section-heading">Review of Committee Decisions</p>
+
+    <p class="para">
+      <input id="f-student-first" class="inline-field" type="text"
+             placeholder="Student first name" style="min-width:100pt" />
+      will continue to receive functional academics classroom instruction and
+      personal care services.
+    </p>
+
+    <textarea id="f-therapy" class="block-field" rows="2"
+              placeholder="e.g. John will also receive 30 min/week of speech therapy…"></textarea>
+
+    <!-- ── Closing the ARD ────────────────────────────────────────── -->
+    <p class="section-heading">Closing the ARD</p>
+
+    <textarea id="f-closing" class="block-field" rows="3"
+              placeholder="Any additional closing comments…"></textarea>
+
+    <div class="bubble-row" style="margin-top:6pt;">
+      <input type="checkbox" id="cb-pwn" />
+      <label for="cb-pwn" class="para">Prior Written Notice was reviewed.</label>
+    </div>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-verbal" />
+      <label for="cb-verbal" class="para">
+        The parent verbally agreed to the decisions made in the meeting today.
+      </label>
+    </div>
+
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-safeguards" />
+      <label for="cb-safeguards" class="para">
+        Procedural Safeguards were provided.
+      </label>
+    </div>
+
+    <hr class="thin" style="margin-top:14pt;" />
+
+    <!-- Minutes Taker -->
+    <p class="para" style="margin-top:8pt;">
+      <strong>Minutes Taker and Position:</strong>
+    </p>
+    <input id="f-minutes-taker" type="text"
+           style="width:100%; border:none; border-bottom:1pt solid #000; margin-top:4pt;"
+           placeholder="Full name, Title" />
+
+  </div><!-- /#document -->
+
+  <script>
+    /* ── Persist form data in localStorage ──────────────────────────── */
+    const SAVE_KEY = "ard_minutes_v1";
+
+    function saveForm() {
+      const data = {};
+      document.querySelectorAll("[id^='f-']").forEach(el => {
+        data[el.id] = el.value;
+      });
+      document.querySelectorAll("[id^='cb-']").forEach(el => {
+        data[el.id] = el.checked;
+      });
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    }
+
+    function loadForm() {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        Object.entries(data).forEach(([id, val]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (el.type === "checkbox") el.checked = val;
+          else el.value = val;
+        });
+      } catch (_) { /* ignore parse errors */ }
+    }
+
+    function clearForm() {
+      if (!confirm("Clear all fields and start over?")) return;
+      document.querySelectorAll("[id^='f-']").forEach(el => { el.value = ""; });
+      document.querySelectorAll("[id^='cb-']").forEach(el => { el.checked = false; });
+      localStorage.removeItem(SAVE_KEY);
+    }
+
+    /* Auto-save on any change */
+    document.getElementById("document").addEventListener("input", saveForm);
+    document.getElementById("document").addEventListener("change", saveForm);
+
+    /* Load saved data on page open */
+    loadForm();
+  </script>
+</body>
+</html>
