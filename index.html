@@ -268,7 +268,6 @@
       .bubble-row input[type="checkbox"] {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-        print-color-adjust: exact;
       }
 
       .bubble-row input[type="checkbox"]:checked {
@@ -495,7 +494,7 @@
           if (el.type === "checkbox") el.checked = val;
           else el.value = val;
         });
-      } catch (_) { /* ignore parse errors */ }
+      } catch (err) { /* ignore parse errors */ }
     }
 
     function clearForm() {
