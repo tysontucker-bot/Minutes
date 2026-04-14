@@ -127,48 +127,6 @@
       line-height: 1.55;
     }
 
-    /* ── Bubble rows ─────────────────────────────────────────────────── */
-    .bubble-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 8pt;
-      margin: 5pt 0;
-      line-height: 1.55;
-    }
-
-    /* Custom circular checkbox ("bubble") */
-    .bubble-row input[type="checkbox"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 14pt;
-      height: 14pt;
-      min-width: 14pt;
-      border: 1.5pt solid #000;
-      border-radius: 50%;
-      cursor: pointer;
-      position: relative;
-      top: 1pt;
-      background: #fff;
-      transition: background .15s;
-    }
-
-    .bubble-row input[type="checkbox"]:checked {
-      background: #000;
-    }
-
-    .bubble-row input[type="checkbox"]:checked::after {
-      content: "";
-      display: block;
-      width: 6pt;
-      height: 6pt;
-      border-radius: 50%;
-      background: #fff;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
     /* ── Inline text inputs ──────────────────────────────────────────── */
     input[type="text"],
     input[type="date"],
@@ -264,15 +222,6 @@
         print-color-adjust: exact;
       }
 
-      /* Bubbles in print */
-      .bubble-row input[type="checkbox"] {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      .bubble-row input[type="checkbox"]:checked {
-        background: #000 !important;
-      }
     }
   </style>
 </head>
@@ -314,30 +263,18 @@
     <!-- ── Opening the ARD ─────────────────────────────────────────── -->
     <p class="section-heading">Opening the ARD</p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-notice" />
-      <label for="cb-notice" class="para">
-        ARD Notice was sent home on
-        <input id="f-notice-date" class="inline-field" type="text" placeholder="MM/DD/YYYY" style="min-width:90pt" />.
-      </label>
-    </div>
+    <p class="para">
+      ARD Notice was sent home on
+      <input id="f-notice-date" class="inline-field" type="text" placeholder="MM/DD/YYYY" style="min-width:90pt" />.
+    </p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-intro" />
-      <label for="cb-intro" class="para">
-        Introductions were made &amp; Statement of Confidentiality was read.
-      </label>
-    </div>
+    <p class="para">
+      Introductions were made &amp; Statement of Confidentiality was read.
+    </p>
 
     <p class="para" style="margin-top:8pt;"><strong>Purpose of the Meeting:</strong></p>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-purpose-parent" />
-      <label for="cb-purpose-parent" class="para">Parent Request</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-purpose-annual" />
-      <label for="cb-purpose-annual" class="para">Annual ARD</label>
-    </div>
+    <p class="para">Parent Request</p>
+    <p class="para">Annual ARD</p>
 
     <p class="para" style="margin-top:8pt;"><strong>Concerns from Parent:</strong></p>
     <textarea id="f-parent-concerns" class="block-field" rows="3"
@@ -346,163 +283,73 @@
     <!-- ── Evaluation and Eligibility ─────────────────────────────── -->
     <p class="section-heading">Evaluation and Eligibility</p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-eval" />
-      <label for="cb-eval" class="para">
-        Review of evaluation data and determination of eligibility.
-      </label>
-    </div>
+    <p class="para">
+      Review of evaluation data and determination of eligibility.
+    </p>
 
     <p class="para" style="margin-top:6pt;">
       Current Eligibility(s) include:
     </p>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-asd" />
-      <label for="cb-elig-asd" class="para">Autism Spectrum Disorder</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-db" />
-      <label for="cb-elig-db" class="para">Deaf-Blindness</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-deaf" />
-      <label for="cb-elig-deaf" class="para">Deafness</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-ed" />
-      <label for="cb-elig-ed" class="para">Emotional Disturbance</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-hi" />
-      <label for="cb-elig-hi" class="para">Hearing Impairment</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-id" />
-      <label for="cb-elig-id" class="para">Intellectual Disability</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-md" />
-      <label for="cb-elig-md" class="para">Multiple Disabilities</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-oi" />
-      <label for="cb-elig-oi" class="para">Orthopedic Impairment</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-ohi" />
-      <label for="cb-elig-ohi" class="para">Other Health Impairment</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-sld" />
-      <label for="cb-elig-sld" class="para">Specific Learning Disability</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-sli" />
-      <label for="cb-elig-sli" class="para">Speech or Language Impairment</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-tbi" />
-      <label for="cb-elig-tbi" class="para">Traumatic Brain Injury</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-elig-vi" />
-      <label for="cb-elig-vi" class="para">Visual Impairment</label>
-    </div>
+    <p class="para">Autism Spectrum Disorder</p>
+    <p class="para">Deaf-Blindness</p>
+    <p class="para">Deafness</p>
+    <p class="para">Emotional Disturbance</p>
+    <p class="para">Hearing Impairment</p>
+    <p class="para">Intellectual Disability</p>
+    <p class="para">Multiple Disabilities</p>
+    <p class="para">Orthopedic Impairment</p>
+    <p class="para">Other Health Impairment</p>
+    <p class="para">Specific Learning Disability</p>
+    <p class="para">Speech or Language Impairment</p>
+    <p class="para">Traumatic Brain Injury</p>
+    <p class="para">Visual Impairment</p>
 
     <!-- ── Development of the IEP ─────────────────────────────────── -->
     <p class="section-heading">Development of the IEP</p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-plaafp" />
-      <label for="cb-plaafp" class="para">
-        Present Level of Academic Achievement and Functional Performance (PLAAFP)
-        can be found in the IEP.
-      </label>
-    </div>
+    <p class="para">
+      Present Level of Academic Achievement and Functional Performance (PLAAFP)
+      can be found in the IEP.
+    </p>
 
     <p class="para" style="margin-top:6pt;">
       Proposed IEP goals/objectives have been presented and accepted in the
       following areas:
     </p>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-goal-math" />
-      <label for="cb-goal-math" class="para">Math</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-goal-reading" />
-      <label for="cb-goal-reading" class="para">Reading</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-goal-science" />
-      <label for="cb-goal-science" class="para">Science</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-goal-ss" />
-      <label for="cb-goal-ss" class="para">Social Studies</label>
-    </div>
+    <p class="para">Math</p>
+    <p class="para">Reading</p>
+    <p class="para">Science</p>
+    <p class="para">Social Studies</p>
 
-    <div class="bubble-row" style="margin-top:6pt;">
-      <input type="checkbox" id="cb-progress" />
-      <label for="cb-progress" class="para">
-        IEP progress reports will be given to the parent every 9 weeks to match
-        the grading report period for all students.
-      </label>
-    </div>
+    <p class="para" style="margin-top:6pt;">
+      IEP progress reports will be given to the parent every 9 weeks to match
+      the grading report period for all students.
+    </p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-accom" />
-      <label for="cb-accom" class="para">
-        Accommodations: See IEP.
-      </label>
-    </div>
+    <p class="para">
+      Accommodations: See IEP.
+    </p>
 
     <!-- ── Personal Care Services ─────────────────────────────────── -->
     <p class="section-heading">Personal Care Services</p>
 
     <p class="para">Personal care services are provided in the areas of:</p>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-escort" />
-      <label for="cb-pcs-escort" class="para">Escort</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-prompting" />
-      <label for="cb-pcs-prompting" class="para">Prompting/Cueing</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-redirect" />
-      <label for="cb-pcs-redirect" class="para">Redirection/Monitoring</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-dressing" />
-      <label for="cb-pcs-dressing" class="para">Dressing</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-toileting" />
-      <label for="cb-pcs-toileting" class="para">Toileting</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-social" />
-      <label for="cb-pcs-social" class="para">Social Skills</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-hygiene" />
-      <label for="cb-pcs-hygiene" class="para">Personal Hygiene</label>
-    </div>
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs-other" />
-      <label for="cb-pcs-other" class="para">
-        Other:
-        <input id="f-pcs-other" class="inline-field" type="text"
-               placeholder="specify" style="min-width:140pt" />
-      </label>
-    </div>
+    <p class="para">Escort</p>
+    <p class="para">Prompting/Cueing</p>
+    <p class="para">Redirection/Monitoring</p>
+    <p class="para">Dressing</p>
+    <p class="para">Toileting</p>
+    <p class="para">Social Skills</p>
+    <p class="para">Personal Hygiene</p>
+    <p class="para">
+      Other:
+      <input id="f-pcs-other" class="inline-field" type="text"
+             placeholder="specify" style="min-width:140pt" />
+    </p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-lre" />
-      <label for="cb-lre" class="para">
-        The committee agrees that this is the Least Restrictive Environment (LRE).
-      </label>
-    </div>
+    <p class="para">
+      The committee agrees that this is the Least Restrictive Environment (LRE).
+    </p>
 
     <!-- ── Placement of Services ──────────────────────────────────── -->
     <p class="section-heading">Placement of Services</p>
@@ -535,24 +382,15 @@
     <textarea id="f-closing" class="block-field" rows="3"
               placeholder="Any additional closing comments…"></textarea>
 
-    <div class="bubble-row" style="margin-top:6pt;">
-      <input type="checkbox" id="cb-pwn" />
-      <label for="cb-pwn" class="para">Prior Written Notice was reviewed.</label>
-    </div>
+    <p class="para">Prior Written Notice was reviewed.</p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-verbal" />
-      <label for="cb-verbal" class="para">
-        The parent verbally agreed to the decisions made in the meeting today.
-      </label>
-    </div>
+    <p class="para">
+      The parent verbally agreed to the decisions made in the meeting today.
+    </p>
 
-    <div class="bubble-row">
-      <input type="checkbox" id="cb-safeguards" />
-      <label for="cb-safeguards" class="para">
-        Procedural Safeguards were provided.
-      </label>
-    </div>
+    <p class="para">
+      Procedural Safeguards were provided.
+    </p>
 
     <hr class="thin" style="margin-top:14pt;" />
 
@@ -575,9 +413,6 @@
       document.querySelectorAll("[id^='f-']").forEach(el => {
         data[el.id] = el.value;
       });
-      document.querySelectorAll("[id^='cb-']").forEach(el => {
-        data[el.id] = el.checked;
-      });
       localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     }
 
@@ -589,8 +424,7 @@
         Object.entries(data).forEach(([id, val]) => {
           const el = document.getElementById(id);
           if (!el) return;
-          if (el.type === "checkbox") el.checked = val;
-          else el.value = val;
+          el.value = val;
         });
       } catch (err) { /* ignore parse errors */ }
     }
@@ -598,7 +432,6 @@
     function clearForm() {
       if (!confirm("Clear all fields and start over?")) return;
       document.querySelectorAll("[id^='f-']").forEach(el => { el.value = ""; });
-      document.querySelectorAll("[id^='cb-']").forEach(el => { el.checked = false; });
       localStorage.removeItem(SAVE_KEY);
     }
 
