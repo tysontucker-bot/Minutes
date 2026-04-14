@@ -330,8 +330,14 @@
     </div>
 
     <p class="para" style="margin-top:8pt;"><strong>Purpose of the Meeting:</strong></p>
-    <textarea id="f-purpose" class="block-field" rows="3"
-              placeholder="Describe the purpose of this meeting…"></textarea>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-purpose-parent" />
+      <label for="cb-purpose-parent" class="para">Parent Request</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-purpose-annual" />
+      <label for="cb-purpose-annual" class="para">Annual ARD</label>
+    </div>
 
     <p class="para" style="margin-top:8pt;"><strong>Concerns from Parent:</strong></p>
     <textarea id="f-parent-concerns" class="block-field" rows="3"
@@ -350,8 +356,58 @@
     <p class="para" style="margin-top:6pt;">
       Current Eligibility(s) include:
     </p>
-    <textarea id="f-eligibility" class="block-field" rows="2"
-              placeholder="e.g. Intellectual Disability, Autism…"></textarea>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-asd" />
+      <label for="cb-elig-asd" class="para">Autism Spectrum Disorder</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-db" />
+      <label for="cb-elig-db" class="para">Deaf-Blindness</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-deaf" />
+      <label for="cb-elig-deaf" class="para">Deafness</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-ed" />
+      <label for="cb-elig-ed" class="para">Emotional Disturbance</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-hi" />
+      <label for="cb-elig-hi" class="para">Hearing Impairment</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-id" />
+      <label for="cb-elig-id" class="para">Intellectual Disability</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-md" />
+      <label for="cb-elig-md" class="para">Multiple Disabilities</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-oi" />
+      <label for="cb-elig-oi" class="para">Orthopedic Impairment</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-ohi" />
+      <label for="cb-elig-ohi" class="para">Other Health Impairment</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-sld" />
+      <label for="cb-elig-sld" class="para">Specific Learning Disability</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-sli" />
+      <label for="cb-elig-sli" class="para">Speech or Language Impairment</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-tbi" />
+      <label for="cb-elig-tbi" class="para">Traumatic Brain Injury</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-elig-vi" />
+      <label for="cb-elig-vi" class="para">Visual Impairment</label>
+    </div>
 
     <!-- ── Development of the IEP ─────────────────────────────────── -->
     <p class="section-heading">Development of the IEP</p>
@@ -368,8 +424,22 @@
       Proposed IEP goals/objectives have been presented and accepted in the
       following areas:
     </p>
-    <textarea id="f-iep-goals" class="block-field" rows="2"
-              placeholder="e.g. Communication, Adaptive Behavior, Math…"></textarea>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-goal-math" />
+      <label for="cb-goal-math" class="para">Math</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-goal-reading" />
+      <label for="cb-goal-reading" class="para">Reading</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-goal-science" />
+      <label for="cb-goal-science" class="para">Science</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-goal-ss" />
+      <label for="cb-goal-ss" class="para">Social Studies</label>
+    </div>
 
     <div class="bubble-row" style="margin-top:6pt;">
       <input type="checkbox" id="cb-progress" />
@@ -389,13 +459,41 @@
     <!-- ── Personal Care Services ─────────────────────────────────── -->
     <p class="section-heading">Personal Care Services</p>
 
+    <p class="para">Personal care services are provided in the areas of:</p>
     <div class="bubble-row">
-      <input type="checkbox" id="cb-pcs" />
-      <label for="cb-pcs" class="para">
-        Personal care services are provided in the areas of
-        <input id="f-pcs" class="inline-field" type="text"
-               placeholder="toileting, feeding, etc."
-               style="min-width:160pt" />.
+      <input type="checkbox" id="cb-pcs-escort" />
+      <label for="cb-pcs-escort" class="para">Escort</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-prompting" />
+      <label for="cb-pcs-prompting" class="para">Prompting/Cueing</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-redirect" />
+      <label for="cb-pcs-redirect" class="para">Redirection/Monitoring</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-dressing" />
+      <label for="cb-pcs-dressing" class="para">Dressing</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-toileting" />
+      <label for="cb-pcs-toileting" class="para">Toileting</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-social" />
+      <label for="cb-pcs-social" class="para">Social Skills</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-hygiene" />
+      <label for="cb-pcs-hygiene" class="para">Personal Hygiene</label>
+    </div>
+    <div class="bubble-row">
+      <input type="checkbox" id="cb-pcs-other" />
+      <label for="cb-pcs-other" class="para">
+        Other:
+        <input id="f-pcs-other" class="inline-field" type="text"
+               placeholder="specify" style="min-width:140pt" />
       </label>
     </div>
 
