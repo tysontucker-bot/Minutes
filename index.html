@@ -635,13 +635,29 @@
       /* ── Derived values ─────────────────────────────────────────── */
       let displayDate = "";
       if (dateVal) {
+        /* dateVal from <input type="date"> is always YYYY-MM-DD; append local
+           midnight so toLocaleDateString reflects the user's time zone. */
         const d = new Date(dateVal + "T00:00:00");
-        displayDate = d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+        if (!isNaN(d.getTime())) {
+          displayDate = d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+        }
       }
 
-      const nameForDoc    = studentName || "[Student Name]";
-      const nameForESY    = studentName || "[student name]";
-      const nameForReview = studentFirst || (studentName ? studentName.split(/[,\s]+/)[0] : "[student]");
+      const nameForDoc  = studentName || "[Student Name]";
+      const nameForESY  = studentName || "[student name]";
+
+      /* Derive a first name for the Review section.
+         Priority: dedicated "Student first name" field → parse from header name.
+         Header name placeholder is "Last, First Middle", so look after the comma
+         first; fall back to the first whitespace-separated token. */
+      let nameForReview = studentFirst;
+      if (!nameForReview && studentName) {
+        const afterComma = studentName.split(",")[1];
+        nameForReview = afterComma
+          ? afterComma.trim().split(/\s+/)[0]
+          : studentName.split(/\s+/)[0];
+      }
+      if (!nameForReview) nameForReview = "[student]";
 
       const pcsItems = [...pcsSelects];
       if (pcsOther) pcsItems.push(pcsOther);
@@ -793,8 +809,14 @@
       win.document.write(html);
       win.document.close();
       win.focus();
-      /* Small delay allows fonts/layout to settle before the print dialog */
-      setTimeout(function () { win.print(); }, 350);
+      /* Trigger print once the document is fully parsed and laid out.
+         After document.close() the page may already be complete (sync write),
+         so check readyState first; otherwise wait for the load event. */
+      if (win.document.readyState === "complete") {
+        win.print();
+      } else {
+        win.onload = function () { win.print(); };
+      }
     }
   </script>
 </body>
